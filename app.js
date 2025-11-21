@@ -1,4 +1,4 @@
-const BASE_URL = 'https://timetrackerapi-9b37bc53e807.herokuapp.com/api/timetracker';
+const BASE_URL = 'https://timetrackerapi-9b37bc53e807.herokuapp.com/api/TimeTracker';
 let timerInterval = null;
 
 function showModal(message) {
