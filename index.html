@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeTracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>TimeTracker</h1>
+        
+        <div class="status">
+            <p>Status: <strong id="status">Unknown</strong></p>
+            <p>Started: <span id="startedAt">-</span></p>
+            <div id="elapsed">0:00</div>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn" onclick="startTimer()">Start</button>
+            <button id="stopBtn" onclick="stopTimer()">Stop</button>
+            <button onclick="fetchStatus(true)">Status</button>
+        </div>
+
+        <p id="error" class="error"></p>
+    </div>
+
+    <!-- Modal Dialog -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modalText"></p>
+            <button onclick="closeModal()" class="modal-btn">OK</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
