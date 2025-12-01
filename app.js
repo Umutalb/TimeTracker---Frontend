@@ -5,6 +5,10 @@ let timerInterval = null;
 const tree = document.getElementById('tree');
 const statusText = document.getElementById('status');
 
+// Başlangıçta butonları disabled yap (flickering önleme)
+document.getElementById('startBtn').disabled = true;
+document.getElementById('stopBtn').disabled = true;
+
 function showModal(message) {
     document.getElementById('modalText').textContent = message;
     document.getElementById('modal').classList.add('show');
