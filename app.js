@@ -1,6 +1,10 @@
 const BASE_URL = 'https://timetrackerapi-9b37bc53e807.herokuapp.com/api/TimeTracker';
 let timerInterval = null;
 
+// Tree and UI elements
+const tree = document.getElementById('tree');
+const statusText = document.getElementById('status');
+
 function showModal(message) {
     document.getElementById('modalText').textContent = message;
     document.getElementById('modal').classList.add('show');
@@ -8,6 +12,31 @@ function showModal(message) {
 
 function closeModal() {
     document.getElementById('modal').classList.remove('show');
+}
+
+function updateTreeState(isRunning, elapsedMs = 0) {
+    if (!tree) return;
+    
+    tree.classList.remove('growing', 'grown');
+    
+    if (isRunning) {
+        // Tree grows based on elapsed time
+        if (elapsedMs > 60000) { // After 1 minute, fully grown
+            tree.classList.add('grown');
+        } else {
+            tree.classList.add('growing');
+        }
+    }
+}
+
+function updateStatusText(isRunning) {
+    if (!statusText) return;
+    
+    if (isRunning) {
+        statusText.textContent = 'Growing...';
+    } else {
+        statusText.textContent = 'Ready to focus';
+    }
 }
 
 async function fetchStatus(showAlert = false) {
@@ -24,13 +53,13 @@ async function fetchStatus(showAlert = false) {
         if (showAlert) {
             if (data.isRunning) {
                 const elapsedText = document.getElementById('elapsed').textContent;
-                showModal(`Timer is running!\nElapsed: ${elapsedText}`);
+                showModal(`🌱 Your tree is growing!\n\nTime: ${elapsedText}`);
             } else {
-                showModal('Timer is stopped.');
+                showModal('🌲 Your tree is resting.\nStart a new session to grow!');
             }
         }
 
-        document.getElementById('status').textContent = data.isRunning ? 'Running' : 'Stopped';
+        updateStatusText(data.isRunning);
         document.getElementById('startedAt').textContent = data.startedAt ? new Date(data.startedAt).toLocaleString() : '-';
         document.getElementById('startBtn').disabled = data.isRunning;
         document.getElementById('stopBtn').disabled = !data.isRunning;
@@ -70,6 +99,10 @@ function startElapsedTimer(startTime, serverNow) {
                 : `${minutes}:${String(seconds).padStart(2, '0')}`;
 
         document.getElementById('elapsed').textContent = formatted;
+        
+        // Update tree growth
+        updateTreeState(true, elapsedMs);
+        
         elapsedMs += 1000; 
     };
 
@@ -83,6 +116,8 @@ function stopElapsedTimer() {
         timerInterval = null;
     }
     document.getElementById('elapsed').textContent = '0:00';
+    updateTreeState(false);
+    updateStatusText(false);
 }
 
 async function startTimer() {
@@ -103,7 +138,8 @@ async function stopTimer() {
             throw new Error(data.error || 'Stop failed');
         }
 
-        showModal(`Completed!\n${data.durationMinutes} minutes\n${data.comment}`);
+        const emoji = data.durationMinutes >= 1 ? '🌳' : '🌱';
+        showModal(`${emoji} Tree Harvested!\n\n${data.durationMinutes} minutes\n${data.comment}`);
         await fetchStatus();
     } catch (e) {
         document.getElementById('error').textContent = 'Error: ' + e.message;
@@ -116,10 +152,14 @@ async function showTotal() {
         const res = await fetch(`${BASE_URL}/total`);
         if (!res.ok) throw new Error('Total request failed');
         const data = await res.json();
+        
+        const trees = Math.floor(data.totalMinutes / 25); // 1 tree per 25 min
+        const treeEmojis = '🌲'.repeat(Math.min(trees, 10)) || '🌱';
+        
         showModal(
             data.totalMinutes > 0
-                ? `Total work time: ${data.totalMinutes} minutes`
-                : 'No sessions yet.'
+                ? `🌲 Your Forest 🌲\n\nTotal focus time:\n${data.totalMinutes} minutes\n\n${treeEmojis}`
+                : '🌱 Your forest is empty.\nStart planting trees!'
         );
     } catch (e) {
         document.getElementById('error').textContent = 'Error: ' + e.message;
@@ -131,8 +171,7 @@ async function resetTimer() {
     try {
         const res = await fetch(`${BASE_URL}/reset`, { method: 'POST' });
         if (!res.ok) throw new Error('Reset failed');
-        const data = await res.json();
-        showModal(data.message || 'Timer and total time reset.');
+        showModal('🔄 Forest cleared!\n\nReady for a fresh start.');
         await fetchStatus();
     } catch (e) {
         document.getElementById('error').textContent = 'Error: ' + e.message;

@@ -3,35 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TimeTracker</title>
+    <title>TimeTracker 🌲</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <h1>TimeTracker</h1>
+    <div class="scene">
+        <!-- Animated background elements -->
+        <div class="stars"></div>
+        <div class="clouds">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+        </div>
         
-        <div class="status">
-            <p>Status: <strong id="status">Unknown</strong></p>
-            <p>Started: <span id="startedAt">-</span></p>
-            <div id="elapsed">0:00</div>
-        </div>
+        <div class="ground"></div>
+        
+        <div class="container">
+            <!-- Tree visualization -->
+            <div class="tree-container">
+                <div class="tree" id="tree">
+                    <div class="trunk"></div>
+                    <div class="leaves">
+                        <div class="leaf leaf-1"></div>
+                        <div class="leaf leaf-2"></div>
+                        <div class="leaf leaf-3"></div>
+                        <div class="leaf leaf-4"></div>
+                        <div class="leaf leaf-5"></div>
+                    </div>
+                </div>
+                <div class="tree-shadow"></div>
+            </div>
 
-        <div class="controls">
-            <button id="startBtn" onclick="startTimer()">Start</button>
-            <button id="stopBtn" onclick="stopTimer()">Stop</button>
-            <button onclick="fetchStatus(true)">Status</button>
-            <button onclick="showTotal()">Total</button>
-            <button onclick="resetTimer()">Reset</button>
-        </div>
+            <!-- Timer display -->
+            <div class="timer-ring">
+                <svg viewBox="0 0 200 200">
+                    <circle class="ring-bg" cx="100" cy="100" r="90"/>
+                    <circle class="ring-progress" id="progressRing" cx="100" cy="100" r="90"/>
+                </svg>
+                <div class="timer-display">
+                    <div id="elapsed" class="time">0:00</div>
+                    <div id="status" class="status-text">Ready to focus</div>
+                </div>
+            </div>
 
-        <p id="error" class="error"></p>
+            <!-- Hidden info -->
+            <p class="started-info">Started: <span id="startedAt">-</span></p>
+
+            <!-- Controls -->
+            <div class="controls">
+                <button id="startBtn" onclick="startTimer()" class="btn btn-start">
+                    <span class="btn-icon">▶</span>
+                    <span>Plant Tree</span>
+                </button>
+                <button id="stopBtn" onclick="stopTimer()" class="btn btn-stop">
+                    <span class="btn-icon">⬛</span>
+                    <span>Harvest</span>
+                </button>
+            </div>
+
+            <div class="controls secondary">
+                <button onclick="fetchStatus(true)" class="btn btn-secondary">
+                    <span>🌿</span> Status
+                </button>
+                <button onclick="showTotal()" class="btn btn-secondary">
+                    <span>🌳</span> Forest
+                </button>
+                <button onclick="resetTimer()" class="btn btn-danger">
+                    <span>🔄</span> Reset
+                </button>
+            </div>
+
+            <p id="error" class="error"></p>
+        </div>
     </div>
 
     <!-- Modal Dialog -->
     <div id="modal" class="modal">
         <div class="modal-content">
+            <div class="modal-icon">🌲</div>
             <p id="modalText"></p>
-            <button onclick="closeModal()" class="modal-btn">OK</button>
+            <button onclick="closeModal()" class="btn btn-modal">Continue</button>
         </div>
     </div>
 
